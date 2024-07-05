@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  mailAttachmentPrinter:
+    image: mailattachmentprinter:v1.0
+    container_name: mailAttachmentPrinter
+    restart: on-failure
+    ## Uncomment when using config file
+    # volumes:
+    #   - ./config:/app/config
+    ## Uncomment when using environment file
+    # env_file:
+    #   - env

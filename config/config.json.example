@@ -1,0 +1,20 @@
+{
+  "imap": {
+    "credentials": {
+      "password": "s3cr3tp4ssw0rd",
+      "username": "some@email.domain"
+    },
+    "force_ssl": true,
+    "from_address": "from@mail.domain",
+    "port": 993,
+    "server": "server.mail.domain"
+  },
+  "log": {
+    "level": "INFO"
+  },
+  "printer": {
+    "name": "Printer_XYZ",
+    "server": "server.printer.domain"
+  },
+  "scan_interval": 10
+}
