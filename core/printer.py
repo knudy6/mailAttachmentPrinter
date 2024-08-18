@@ -1,9 +1,10 @@
 """mailAttachmentPrinter printer"""
-from os import remove,path
+from os import remove
+from os.path import exists,join
 from sys import exit,stderr
 
 from cups import setServer,Connection
-from .config import get_config,LOGGER
+from .config import get_config,LOGGER,TMP_DIRECTORY,PRINTER_ENABLE
 
 CONFIGURATION = get_config()
 setServer(CONFIGURATION['printer']['server'])
@@ -35,12 +36,15 @@ def get_printers():
 
 def print_pdf(pdf_bytes, printer):
     """print pdf"""
-    temporary_file_path = "/tmp/tmp.pdf"
+    temporary_file_path = join(TMP_DIRECTORY,"tmp.pdf")
     # remove temporary file
-    if path.exists(temporary_file_path):
+    if exists(temporary_file_path):
         remove(temporary_file_path)
     with open(temporary_file_path, 'bw') as tmp_file:
         tmp_file.write(pdf_bytes)
         LOGGER.debug("Printing file '%s' on Printer '%s'", temporary_file_path, printer)
-        __print_file(temporary_file_path, printer)
-        remove(temporary_file_path)  # remove temporary file
+        ## Print if variable True, Disable for Debugging in config.py
+        if PRINTER_ENABLE:
+            __print_file(temporary_file_path, printer)
+            remove(temporary_file_path)  # remove temporary file
+        LOGGER.debug("Processing of file '%s' on Printer '%s' done.", temporary_file_path, printer)

@@ -1,12 +1,14 @@
 """mailAttachmentPrinter config"""
-from os import environ,path
+from os import environ,mkdir
+from os.path import exists,dirname,realpath,isdir,join
 from json import load
 from sys import exit,stderr
 from logging import getLogger,INFO,StreamHandler,Formatter
 
-APP_DIRECTORY = path.dirname(path.dirname(path.realpath(__file__)))
-CONFIG_DIRECTORY = APP_DIRECTORY + "/config"
-CONFIG_FILE = CONFIG_DIRECTORY + "/config.json"
+APP_DIRECTORY = dirname(dirname(realpath(__file__)))
+CONFIG_DIRECTORY = join(APP_DIRECTORY, "config")
+CONFIG_FILE = join(CONFIG_DIRECTORY, "config.json")
+TMP_DIRECTORY = join(APP_DIRECTORY, "tmp")
 
 _LOGGER_HANDLER = StreamHandler()
 _LOGGER_HANDLER.setFormatter(Formatter("%(asctime)s - %(levelname)s - %(message)s"))
@@ -14,10 +16,13 @@ LOGGER = getLogger('mailAttachmentPrinter')
 LOGGER.addHandler(_LOGGER_HANDLER)
 LOGGER.setLevel(INFO)
 
+## DEBUG
+PRINTER_ENABLE = False
+
 def __load_config_file() -> dict:
     """load config from file"""
     # check if file exists
-    if path.exists(CONFIG_FILE):
+    if exists(CONFIG_FILE):
         # load config from file
         config_file = open(CONFIG_FILE, 'r')
         try:
@@ -93,6 +98,14 @@ def _set_log_level(config) -> None:
         level = INFO
     LOGGER.setLevel(level)
 
+def __check_directories() -> None:
+    """check directories and create missing"""
+    if not isdir(TMP_DIRECTORY):
+        if exists(TMP_DIRECTORY):
+            LOGGER.critical("Path %s exists, but is not a directory", TMP_DIRECTORY)
+            exit(-1)
+        mkdir(TMP_DIRECTORY)
+
 def get_config() -> dict:
     """return config"""
     # load config from file
@@ -102,5 +115,6 @@ def get_config() -> dict:
         config = __load_environment_variables()
 
     _set_log_level(config)
+    __check_directories()
 
     return config
