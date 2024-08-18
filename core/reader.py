@@ -4,21 +4,19 @@ from imaplib import IMAP4,IMAP4_SSL
 from email import message_from_bytes
 
 from .printer import print_pdf
-from .config import get_config,LOGGER
+from .config import LOGGER
 
-CONFIGURATION = get_config()
-
-def try_connection():
+def try_connection(configuration):
     """try imap connection"""
     LOGGER.debug("Testing connection and authentifikation to imap server")
 
-    if CONFIGURATION['imap']['force_ssl']:
-        mail = IMAP4_SSL(CONFIGURATION['imap']['server'], CONFIGURATION['imap']['port'])
+    if configuration['imap']['force_ssl']:
+        mail = IMAP4_SSL(configuration['imap']['server'], configuration['imap']['port'])
     else:
-        mail = IMAP4(CONFIGURATION['imap']['server'], CONFIGURATION['imap']['port'])
+        mail = IMAP4(configuration['imap']['server'], configuration['imap']['port'])
 
-    password = CONFIGURATION['imap']['credentials']['password']
-    username = CONFIGURATION['imap']['credentials']['username']
+    password = configuration['imap']['credentials']['password']
+    username = configuration['imap']['credentials']['username']
 
     try:
         mail.login(username, password)
@@ -28,24 +26,24 @@ def try_connection():
         print(exception, file=stderr)
         exit(-1)
 
-def read_email():
+def read_email(configuration):
     """read mail from imap server"""
     LOGGER.info("Checking for emails")
 
-    if CONFIGURATION['imap']['force_ssl']:
-        mail = IMAP4_SSL(CONFIGURATION['imap']['server'], CONFIGURATION['imap']['port'])
+    if configuration['imap']['force_ssl']:
+        mail = IMAP4_SSL(configuration['imap']['server'], configuration['imap']['port'])
     else:
-        mail = IMAP4(CONFIGURATION['imap']['server'], CONFIGURATION['imap']['port'])
+        mail = IMAP4(configuration['imap']['server'], configuration['imap']['port'])
 
-    password = CONFIGURATION['imap']['credentials']['password']
-    username = CONFIGURATION['imap']['credentials']['username']
+    password = configuration['imap']['credentials']['password']
+    username = configuration['imap']['credentials']['username']
 
     mail.login(username, password)
     mail.select('Inbox')
 
     # only check unseen emails
     try:
-        from_address = CONFIGURATION['imap']['from_address']
+        from_address = configuration['imap']['from_address']
         typ, data = mail.search(None, f'(UNSEEN FROM "{from_address}")')
     except Exception:
         typ, data = mail.search(None, f'(UNSEEN)')
@@ -64,7 +62,7 @@ def read_email():
             # print only pdf
             if part.get_content_type() == 'application/pdf':
                 LOGGER.info("Printing mail attachment")
-                print_pdf(part.get_payload(decode=True),CONFIGURATION['printer']['name'])
+                print_pdf(part.get_payload(decode=True),configuration['printer']['name'])
             elif part.get_filename().split("?")[-2].endswith(".pdf"):
                 LOGGER.info("Printing mail attachment")
-                print_pdf(part.get_payload(decode=True),CONFIGURATION['printer']['name'])
+                print_pdf(part.get_payload(decode=True),configuration['printer']['name'])

@@ -5,7 +5,7 @@ from time import sleep
 from json import dumps
 
 from .config import get_config,LOGGER
-from .printer import get_printers,try_connection as printer_try_connection
+from .printer import get_printers,try_connection as printer_try_connection,set_server as printer_set_server
 from .reader import read_email,try_connection as reader_try_connection
 
 def main():
@@ -13,10 +13,11 @@ def main():
     configuration = get_config()
 
     # check if connection to cups is possible
+    printer_set_server(configuration)
     printer_try_connection()
 
     # check if connection to imap server is possible
-    reader_try_connection()
+    reader_try_connection(configuration)
 
     # check if printer name is empty
     printers = get_printers()
@@ -35,7 +36,7 @@ def main():
     LOGGER.info(dumps(print_configuration, indent=2))
 
     # run main program
-    every(int(configuration['scan_interval'])).seconds.do(read_email)
+    every(int(configuration['scan_interval'])).seconds.do(lambda: read_email(configuration))
 
     LOGGER.info('MailPrinter is now running...')
 

@@ -4,10 +4,11 @@ from os.path import exists,join
 from sys import exit,stderr
 
 from cups import setServer,Connection
-from .config import get_config,LOGGER,TMP_DIRECTORY,PRINTER_ENABLE
+from .config import LOGGER,TMP_DIRECTORY,PRINTER_ENABLE
 
-CONFIGURATION = get_config()
-setServer(CONFIGURATION['printer']['server'])
+def set_server(configuration):
+    """set server for cups"""
+    setServer(configuration['printer']['server'])
 
 def __print_file(_file, printer, description=""):
     """print file"""
