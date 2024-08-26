@@ -8,7 +8,7 @@ from .config import LOGGER
 
 def try_connection(configuration):
     """try imap connection"""
-    LOGGER.debug("Testing connection and authentifikation to imap server")
+    LOGGER.debug("Testing connection and authentication to imap server")
 
     if configuration['imap']['force_ssl']:
         mail = IMAP4_SSL(configuration['imap']['server'], configuration['imap']['port'])
