@@ -5,6 +5,8 @@ from json import load
 from sys import exit,stderr
 from logging import getLogger,INFO,StreamHandler,Formatter
 
+TRUE_VALUES = ['true', '1', 'y', 'yes']
+
 APP_DIRECTORY = dirname(dirname(realpath(__file__)))
 CONFIG_DIRECTORY = join(APP_DIRECTORY, "config")
 CONFIG_FILE = join(CONFIG_DIRECTORY, "config.json")
@@ -71,7 +73,7 @@ def __load_environment_variables() -> dict:
                 "password": environ.get("IMAP_CREDENTIALS_PASSWORD"),
                 "username": environ.get("IMAP_CREDENTIALS_USERNAME")
             },
-            "force_ssl": bool(environ.get("IMAP_FORCE_SSL", default=True)),
+            "force_ssl": environ.get("IMAP_FORCE_SSL", default="True").lower() in TRUE_VALUES,
             "port": int(environ.get("IMAP_PORT", default=993)),
             "server": environ.get("IMAP_SERVER")
         },
