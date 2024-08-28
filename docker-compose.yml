@@ -9,7 +9,7 @@ services:
     # volumes:
     #   - ./config:/app/config
     ## Uncomment volumes and the following line when usinf tide extension
-    #   - ./config:/app/config
+    #   - ./tides:/app/tides
     ## Uncomment the following two lines when using environment file
     # env_file:
     #   - env
