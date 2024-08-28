@@ -16,5 +16,12 @@
     "name": "Printer_XYZ",
     "server": "server.printer.domain"
   },
-  "scan_interval": 10
+  "scan_interval": 10,
+  "tide": {
+    "enabled": true,
+    "stations": [
+      "stationIDOne",
+      "stationIDTwo"
+    ]
+  }
 }

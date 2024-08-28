@@ -48,6 +48,9 @@ def read_email(configuration):
     except Exception:
         typ, data = mail.search(None, f'(UNSEEN)')
 
+    # keep track if an attachment was printed
+    attachment_printed = False
+
     for num in data[0].split():
         LOGGER.debug("New mail detected, processing...")
         typ, data = mail.fetch(num, '(RFC822)')
@@ -63,6 +66,12 @@ def read_email(configuration):
             if part.get_content_type() == 'application/pdf':
                 LOGGER.info("Printing mail attachment")
                 print_pdf(part.get_payload(decode=True),configuration['printer']['name'])
+                attachment_printed = True
             elif part.get_filename().split("?")[-2].endswith(".pdf"):
                 LOGGER.info("Printing mail attachment")
                 print_pdf(part.get_payload(decode=True),configuration['printer']['name'])
+                attachment_printed = True
+
+        if attachment_printed and configuration["tide"]["enabled"]:
+            from .tides import create_tide_overview
+            create_tide_overview(configuration)

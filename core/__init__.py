@@ -1,4 +1,5 @@
 """mailAttachmentPrinter core"""
+from copy import deepcopy
 from schedule import every,run_pending
 from sys import exit
 from time import sleep
@@ -29,9 +30,14 @@ def main():
         exit(-1)
     LOGGER.debug("Configured printer in cups printer server list")
 
+    # check tide requirements if enabled
+    if configuration["tide"]["enabled"]:
+        from .tides import check_requirements
+        check_requirements(configuration)
+
     # print config
     LOGGER.info("Running with the following configuration:")
-    print_configuration = configuration.copy()
+    print_configuration = deepcopy(configuration)
     print_configuration['imap']['credentials']['password'] = "******"
     LOGGER.info(dumps(print_configuration, indent=2))
 

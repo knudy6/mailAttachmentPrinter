@@ -2,12 +2,14 @@ version: '3.8'
 
 services:
   mailAttachmentPrinter:
-    image: mailattachmentprinter:v1.0
+    image: mailattachmentprinter:v1.1
     container_name: mailAttachmentPrinter
     restart: on-failure
-    ## Uncomment when using config file
+    ## Uncomment the following two lines when using config file
     # volumes:
     #   - ./config:/app/config
-    ## Uncomment when using environment file
+    ## Uncomment volumes and the following line when usinf tide extension
+    #   - ./config:/app/config
+    ## Uncomment the following two lines when using environment file
     # env_file:
     #   - env

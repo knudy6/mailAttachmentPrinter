@@ -1,0 +1,25 @@
+FROM python:3.12.4-alpine3.20
+
+# Copy Files
+RUN mkdir /app
+COPY . /app/
+
+# install alpine requirements
+RUN apk --update add --no-cache --virtual .build-deps musl-dev gcc cups-dev \
+&& rm -rf /var/cache/apk/*
+
+# Install python requirements
+RUN pip3 install -r /app/requirements
+
+# Install python requirements - 2
+RUN pip3 install -r /app/requirements.with_tides
+
+# install alpine requirements
+RUN apk --update add --no-cache --virtual font-liberation font-liberation-sans-narrow ttf-linux-libertine \
+&& rm -rf /var/cache/apk/*
+RUN apk --update add --no-cache --virtual jpeg-dev zlib-dev libffi-dev pango-dev cairo-dev gdk-pixbuf \
+&& rm -rf /var/cache/apk/*
+
+# Start
+WORKDIR /app
+CMD ["python3", "entrypoint.py"]
