@@ -73,6 +73,7 @@ def _get_files() -> list:
     LOGGER.debug("Get all tide files")
     files = listdir(TIDES_DIRECTORY)
     full_files = [join(TIDES_DIRECTORY,file) for file in files]
+    full_files.sort()
     return full_files
 
 def _get_data_from_file(file) -> list:
