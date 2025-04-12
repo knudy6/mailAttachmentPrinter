@@ -67,7 +67,7 @@ def read_email(configuration):
                 LOGGER.info("Printing mail attachment")
                 print_pdf(part.get_payload(decode=True),configuration['printer']['name'])
                 attachment_printed = True
-            elif part.get_filename().split("?")[-2].endswith(".pdf"):
+            elif len(part.get_filename().split("?")) > 1 and part.get_filename().split("?")[-2].endswith(".pdf"):
                 LOGGER.info("Printing mail attachment")
                 print_pdf(part.get_payload(decode=True),configuration['printer']['name'])
                 attachment_printed = True
@@ -75,3 +75,5 @@ def read_email(configuration):
         if attachment_printed and configuration["tide"]["enabled"]:
             from .tides import create_tide_overview
             create_tide_overview(configuration)
+
+    mail.logout()
