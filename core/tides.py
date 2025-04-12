@@ -173,7 +173,7 @@ def _combine_data(configuration) -> dict:
         if meta_data["station"] not in configuration["tide"]["stations"]:
             continue
         if meta_data["station"] in all_data.keys():
-            all_data[meta_data["station"]]['data'].append(tide_data)
+            all_data[meta_data["station"]]['data'] += tide_data
         else:
             new_data = {meta_data["station"]:{"name": meta_data["name"],"data": tide_data}}
             all_data.update(new_data)
